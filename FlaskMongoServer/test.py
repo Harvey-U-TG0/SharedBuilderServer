@@ -1,3 +1,5 @@
+# This python file is run to test various functionalities of the server
+
 # Requests allows a python program to esseentially type in URL requests
 import requests
 import json
