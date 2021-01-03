@@ -3,7 +3,7 @@ from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-api = Api(app)
+api = Api(app);
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
 
@@ -12,46 +12,35 @@ class VideoModel(db.Model):
     name = db.Column(db.String(100), nullable=False)
     views = db.Column(db.Integer, nullable = False)
     likes= db.Column(db.Integer, nullable = False)
+    brickArray = db.Column(db.PickleType, nullable = True)
 
     def __repr__(self):
-        return f"Video(name={name}, views={views}, likes={likes})"
+        return f"Video(name={name}, views={views}, likes={likes}, brickArray{brickArray})"
 
 db.create_all()
 
-# Simple Name Example
-names = {"tim": {"age":19, "gender": "male"},
-         "bill": {"age": 70, "gender": "male"}}
-
-
-class HelloWorld(Resource):
-    def get(self, name, test):
-        return names[name]
-
-    def post(self):
-        return{"data": "Posted"}
-    
-api.add_resource(HelloWorld, "/helloworld/<string:name>/<int:test>")
-
-
 # Video System Example
-
 video_put_args = reqparse.RequestParser()
 video_put_args.add_argument("name",type=str, help="Name of the video",required=True)
 video_put_args.add_argument("views",type=int, help="Views of the video",required=True)
 video_put_args.add_argument("likes",type=int, help="Likes of the video",required=True)
+video_put_args.add_argument("brickArray",type=bytes, help="The brick array itself",required=True)
+
 
 video_update_args = reqparse.RequestParser()
 video_update_args.add_argument("")
 video_update_args.add_argument("name",type=str, help="Name of the video")
 video_update_args.add_argument("views",type=int, help="Views of the video")
 video_update_args.add_argument("likes",type=int, help="Likes of the video")
+video_update_args.add_argument("brickArray",type=list, help="The brick array itself",required=True)
 
 
 resource_fields = {
     'id': fields.Integer,
     'name': fields.String,
     'views': fields.Integer,
-    'likes': fields.Integer
+    'likes': fields.Integer,
+    'brickArray': fields.List
 }
 
 
@@ -69,7 +58,7 @@ class Video(Resource):
         result = VideoModel.query.filter_by(id=video_id).first()
         if result:
             abort(409, message="Video id taken...")
-        video = VideoModel(id=video_id, name=args['name'], views=args['views'], likes=args['likes'])
+        video = VideoModel(id=video_id, name=args['name'], views=args['views'], likes=args['likes'], brickArray=args['brickArray'])
         db.session.add(video)
         db.session.commit()
         return video, 201
@@ -86,6 +75,8 @@ class Video(Resource):
             result.name = args['views']
         if args['likes']:
             result.name = args['likes']
+        if args['brickArray']:
+            result.brickArray = args['brickArray']
  
         db.session.commit()
         return result
