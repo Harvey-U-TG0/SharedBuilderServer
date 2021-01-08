@@ -6,7 +6,11 @@
 
 3) Follow the second option in this tutorial "https://treehouse.github.io/installation-guides/mac/mongo-mac.html"mkdir -p /data/db
 
-4) Store database date instead in ~/data/db, then run sudo ~/mongodb/bin/mongod --dbpath=/Users/harveyu/data/db
+4) Launching the mongo database:, then run sudo ~/mongodb/bin/mongod --dbpath=/Users/harveyu/data/db
+If this doesn't work it is likely that the database may already be running. To stop it, open mongo shell and use these commands
+use admin
+db.shutdownServer()
+
 
 6) Commands "https://docs.mongodb.com/manual/reference/mongo-shell/" for mongo shell
 

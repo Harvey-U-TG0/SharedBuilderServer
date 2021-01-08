@@ -1,25 +1,14 @@
 from flask import Flask, request
 from flask_pymongo import PyMongo
+from testData import ModelTestData
 
 app = Flask(__name__)
-#The SharedBuilder is a referece to the server
+#The SharedBuilder is a referece to the server and database
 app.config["MONGO_URI"] = "mongodb://localhost:27017/SharedBuilder"
 mongo = PyMongo(app)
 
-# Collection called users
 
-# Will store 
-# { "_id": ObjectID, 
-#   "username": String, 
-#   "handPosition": [x, y],
-#   "brickConfig": [
-#       {
-#           "type": String
-#           "colour": String
-#           "position": [x, y]
-#       }
-#   ]
-# }
+# Sending data to the server
 
 @app.route('/getUser/<username>', methods=['GET'])
 def getUser(username):
@@ -51,6 +40,41 @@ def addCustomUser():
     print(online_users)
     return str(online_users.inserted_id), 200
 
+@app.route('/postInterfaceData/<username>', methods=['POST'])
+def postInterfaceData(username):
+    interfaceDataRecieved = request.get_json()
+
+    # A list containing dictionaries for each brick
+    bricks = interfaceDataRecieved['bricks']
+
+    document = {
+        "_id": username,
+        "brickConfig": bricks
+    }
+
+    #print(data)
+
+    # Upload data to the databse
+    #uploadID = mongo.db.InterfaceData.insert_one(document)
+    
+
+    myquery = { "_id": username }
+    newvalues = { "$set": { "brickConfig": bricks } }
+
+
+    mongo.db.collection.update_one(myquery, newvalues,upsert= True)
+
+    print(mongo.db.collection.count())
+
+    #print('{} posted interface data to server '.format(username))
+    #print (interfaceData)
+
+    return 'Added data succesfully', 200
+
+
+
+# Fetching data from the server
+
 @app.route('/unityTestGet', methods=['GET'])
 def unityTestGet():
     data = {
@@ -59,6 +83,11 @@ def unityTestGet():
         "playerName": "Nathan"
     }
     return data, 200
+
+@app.route('/getModel', methods=['GET'])
+def getModel():
+    return ModelTestData.modelB, 200
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
