@@ -74,7 +74,7 @@ def postInterfaceData(username):
 
     #print(mongo.db.InterfaceData.count())
     #print(mongo.db.InterfaceData.find()[0])
-    print(mongo.db.modelData.find_one({"_id": userEditing}))
+    #print(mongo.db.modelData.find_one({"_id": userEditing}))
 
     #print('{} posted interface data to server '.format(username))
     #print (interfaceData)
@@ -83,12 +83,8 @@ def postInterfaceData(username):
 
 
 
-
-
-
-
 # Given a username and new model ID (or False) will update the users editing status
-@app.route('/updateUserEditing/<username>/<modelID>', methods=['POST'])
+@app.route('/updateUserEditing/<username>/<modelID>', methods=['GET'])
 def updateUserEditing(username,modelID):
     print ('user id {} requests to change their editing model ID to {}'. format(username,modelID))
 
@@ -102,17 +98,14 @@ def updateUserEditing(username,modelID):
     mongo.db.InterfaceData.update_one(myquery, newvalues,upsert= True)
 
     newModelIDValue = mongo.db.InterfaceData.find_one(myquery)["userEditing"]
-    print ("user editing value set to " + newModelIDValue)
+    print ("user editing value set to " + str(newModelIDValue))
 
 
     return 'Changed user editing data succesfully', 200
 
 
 
-
-
 # Fetching data from the server
-
 @app.route('/getModel/<modelID>', methods=['GET'])
 def getModel(modelID):
     # Access server database and get the model with that id
@@ -157,7 +150,7 @@ if __name__ == "__main__":
 #}
 
 # Model Data Docuemnt example
-#{
+ #{
 #   '_id': <model id as a string>
 #   'userContributions': List of Interface Data Docuemnts as shown above
 #   'cost': string of the cost eg '10'
