@@ -1,11 +1,19 @@
 from flask import Flask, request
 from flask_pymongo import PyMongo
 from testData import ModelTestData
+from brickData import data
+import sys
+sys.path.append('/Users/harveyu/GitHub/SharedBuilderServer/SecureData')
+from privateKeys import Keys
 
 app = Flask(__name__)
 #The SharedBuilder is a referece to the server and database
 app.config["MONGO_URI"] = "mongodb://localhost:27017/SharedBuilder"
 mongo = PyMongo(app)
+
+# Brick Link Information
+brickLinkBaseURL = "https://api.bricklink.com/api/store/v1"
+auth = Keys.brickLinkAuth
 
 
 # Sending data to the server
@@ -130,16 +138,38 @@ def getModel(modelID):
 
 # Updates the costs for all the bricks in 
 def UpdateCosts():
+    for key in data.brickCodes:
+        # Get the cost of that brick
+        response = requests.get(brickLinkBaseURL + "/items/part/"+data.brickCodes[key].ToString()+"old/price", auth=auth)
+        
+        cost = response['data']['avg_price']
+
+        # Update the 
+        myquery = { "_id": key }
 
 
+        newvalues = { "$set": { "cost": cost} }
 
+        mongo.db.CostData.update_one(myquery, newvalues,upsert= True)
+
+
+@app.route('/getCosts/<brickID>', methods=['GET'])
+def GetCosts(brickID):
+    data = mongo.db.CostData.find_one({ "_id": brickID })
+        
+    
+    # If not make one with an empty user contribution
+    if (data == None):
+        Send = "No data with that brick id found"
+    else:
+        Send = data
+
+    return Send, 200
 
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
-
-
-
+    
 
 
 #Data format reference
