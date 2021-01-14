@@ -19,5 +19,3 @@ db.shutdownServer()
 6) Commands "https://docs.mongodb.com/manual/reference/mongo-shell/" for mongo shell
 
 7) Get into mogno shell using ~/mongodb/bin/mongo in terminal or navigating to it directly and double clicking if this does not work.
-
-
