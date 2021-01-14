@@ -16,6 +16,9 @@ db.shutdownServer()
 
 7) Get into mogno shell using ~/mongodb/bin/mongo in terminal or navigating to it directly and double clicking if this does not work.
 
+8) Server if server address already in use
+ps aux | grep python
+
 # This is not a database, it's a instance of mongodb
 # An instance of mongodb, can hold many databases
 print("1")
@@ -31,3 +34,11 @@ mycol = mydb["customers"]
 mydict = { "name": "John", "address": "Highway 37" }
 
 x = mycol.insert_one(mydict)
+
+
+
+
+How to get file from headless pi zero
+1) enable in mac sharing
+2) On raspberry pi do this command
+scp <filename> harveyu@192.168.1.73:/Users/harveyu/Desktop

@@ -128,6 +128,8 @@ def getModel(modelID):
 
     return modelDocToSend, 200
 
+# Updates the costs for all the bricks in 
+def UpdateCosts():
 
 
 
@@ -154,6 +156,14 @@ if __name__ == "__main__":
 #   '_id': <model id as a string>
 #   'userContributions': List of Interface Data Docuemnts as shown above
 #   'cost': string of the cost eg '10'
+#}
+
+
+# Brick Cost Document
+#{
+#    '_id': Internal brick ID
+#    'code': The official code of that brick
+#    "cost": The cost in GDP of that brick
 #}
 
 

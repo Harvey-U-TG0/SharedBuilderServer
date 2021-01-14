@@ -1,4 +1,5 @@
 import requests
+import ast
 from requests_oauthlib import OAuth1
 
 import sys
@@ -11,4 +12,10 @@ auth = Keys.brickLinkAuth
 
 
 response = requests.get(brickLinkBaseURL + "/items/part/3001old/price", auth=auth)
-print(response.text)
+
+data = response.json()
+#dictionary = ast.literal_eval(data)
+
+print(data['data']['avg_price'])
+
+
